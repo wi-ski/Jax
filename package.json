@@ -1,0 +1,41 @@
+{
+  "name": "chatapplication",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "nodemon --ignore client/ ./server"
+  },
+  "dependencies": {
+    "archiver": "^1.3.0",
+    "aws-sdk": "^2.22.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babel-runtime": "^6.23.0",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-graphql": "^0.6.3",
+    "glamor": "^2.20.20",
+    "graphql": "^0.9.1",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.7.6",
+    "multer": "^1.2.1",
+    "multer-s3": "^2.5.0",
+    "nvm": "0.0.4",
+    "ramda": "^0.23.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "webpack": "^2.2.0-rc.3",
+    "webpack-dev-middleware": "^1.9.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "~6.1.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "eslint": "~2.11.0",
+    "eslint-plugin-react": "~5.1.0",
+    "nodemon": "^1.11.0"
+  }
+}
