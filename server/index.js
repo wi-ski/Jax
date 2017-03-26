@@ -9,6 +9,8 @@ const P = require('bluebird')
 const graphqlHTTP = require('express-graphql')
 const {buildSchema} = require('graphql')
 
+const GRAPHQLSCHEMA = require('./conversation/query/conversation-graphql-schema')
+
 const {
 	fileRouter,
 	folderRouter,
@@ -20,6 +22,15 @@ mongoose.Promise = P
 const webpackConfig = require('../webpack.config')
 
 const app = express()
+var server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
 
 // Parse JSON bodies
 app.use(bodyParser.json())
@@ -32,34 +43,6 @@ app.use(webpackMiddleware(
 
 // Set up static files
 app.use(express.static('public'))
-
-var schema = buildSchema(`
-  type Query {
-    quoteOfTheDay: String
-    random: Float!
-    rollThreeDice: [Int]
-  }
-`);
-
-// The root provides a resolver function for each API endpoint
-var root = {
-  quoteOfTheDay: () => {
-    return Math.random() < 0.5 ? 'Take it easy' : 'Salvation lies within';
-  },
-  random: () => {
-    return Math.random();
-  },
-  rollThreeDice: () => {
-    return [1, 2, 3].map(_ => 1 + Math.floor(Math.random() * 6));
-  },
-};
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
-
-
 
 
 // Routes for primary API
