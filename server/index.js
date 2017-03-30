@@ -11,6 +11,9 @@ const {buildSchema} = require('graphql')
 
 const GRAPHQLSCHEMA = require('./conversation/query/conversation-graphql-schema')
 
+
+const configurateSockets = require('./conversation/sockets')
+
 const {
 	fileRouter,
 	folderRouter,
@@ -22,16 +25,26 @@ mongoose.Promise = P
 const webpackConfig = require('../webpack.config')
 
 const app = express()
-var server = require('http').Server(app);
+const server = require('http').Server(app);
 const io = require('socket.io')(server);
+server.listen(8809)
+// io.sockets.on('connection', function (socket) {
+// 	socket.join('room')
+// 	// console.log(io.sockets.clients('room'));
+// 	// console.log(io.of('/').in('room').clients());
+// 	console.log(socket.adapter.rooms)
+// });
 
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
 
+
+
+var NRP    = require('node-redis-pubsub');
+var config = {
+  port  : 6379  , // Port of your locally running Redis server
+  scope : 'demo'  // Use a scope to prevent two NRPs from sharing messages
+};
+
+var nrp = new NRP(config); // This is the NRP client
 // Parse JSON bodies
 app.use(bodyParser.json())
 
@@ -41,19 +54,22 @@ app.use(webpackMiddleware(
 	{ publicPath: '/dist' }
 ))
 
-// Set up static files
-app.use(express.static('public'))
-
-
 // Routes for primary API
 app.use('/api/projects', require('./project/router'))
 app.use('/api/files', fileRouter)
 app.use('/api/folders', folderRouter)
 
+app.get('/',function(req, res) {
+  res.sendFile("/Users/wiski/Projects/ChatApp/application/public/index.html") //<- What the actual fuck is going on here.
+  // res.sendFile(__dirname+'/public')
+})
+
 mongoose
 	.connect('mongodb://localhost:27019/backend-challenge')
 	.then(() => {
-		app.listen(8080, () => {
+configurateSockets(io,mongoose,nrp)
+
+		app.listen(8808, () => {
 			console.log('Server started') // eslint-disable-line no-console
 		})
 	})

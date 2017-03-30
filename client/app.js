@@ -1,26 +1,40 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import { css } from 'glamor'
 
-import createFileTree from './util/create-file-tree'
-import getFiles from './xhr/get-files'
-import createFolder from './xhr/create-folder'
-import uploadFile from './xhr/upload-file'
-import ProjectHeader from './project-header'
-import MainContents from './main-contents'
-import Controls from './controls'
-import FileList from './file-list'
-import NewFolder from './new-folder'
+import { ReactDOM,
+         render }             from 'react-dom';
+import { createStore,
+         applyMiddleware,
+         combineReducers }    from 'redux';
+import { Router,
+         Route,
+         browserHistory,
+         hashHistory,
+         IndexRoute }         from 'react-router'
+
+import {
+  syncHistoryWithStore,
+  routerReducer }             from 'react-router-redux'
+// import {
+//         logger,
+//         thunk
+//       }                       from 'Middleware';
+
+
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:8809/',{'force new connection': true})
+
+socket.on('connect', function(){
+	//a
+	socket.emit('message',{things:'stuff'})
+});
+
 
 const styles = {
-	app: css({
+	app: {
 		fontFamily: 'bc, sans-serif',
-	}),
-	noProjects: css({
-		fontSize: '24px',
-		margin: '100px auto',
-		textAlign: 'center',
-	}),
+	},
+	noProjects: ''
 }
 
 const initialState = {
